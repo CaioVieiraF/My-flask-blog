@@ -27,7 +27,7 @@ def save_image(img):
 def send_reset_email(user):
     token = user.get_reset_token()
     msg = Message(
-        'Password reset request',
+        'Solicitação de nova senha',
         sender='noreply@demo.com',
         recipients=[
             user.email
@@ -35,9 +35,11 @@ def send_reset_email(user):
     )
 
     msg.body = f'''
-To reset your password, visit the following link:
+Para mudar a sua senha, entre no seguinte link:
+
 {url_for('users.request_token', token=token, _external=True)}
-if you didn't make this request you can ignore this E-mail.
+
+Se você não sabe do que isso se trata, apenas ignore esse E-mail.
     '''
     mail.send(msg)
 
@@ -45,7 +47,7 @@ if you didn't make this request you can ignore this E-mail.
 def send_delete_email(user):
     token = user.get_reset_token()
     msg = Message(
-        'Account delete request',
+        'Solicitação de remolção de conta',
         sender='noreply@demo.com',
         recipients=[
             user.email
@@ -53,12 +55,12 @@ def send_delete_email(user):
     )
 
     msg.body = f'''
-To delete your account, visit the following link:
+Para deletar sua conta, entre no seguinte link:
 {url_for('users.request_token_delete',
     user_id=user.id,
     token=token,
     _external=True
 )}
-if you didn't make this request you can ignore this E-mail.
+Se você não sabe do que isso se trata, apenas ignore esse E-mail.
     '''
     mail.send(msg)

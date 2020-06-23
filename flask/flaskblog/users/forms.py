@@ -32,7 +32,7 @@ class RegistrationForm(FlaskForm):
     )
 
     password = PasswordField(
-        'Password',
+        'Senha',
         validators=[
             DataRequired(),
             Length(min=8)
@@ -40,7 +40,7 @@ class RegistrationForm(FlaskForm):
     )
 
     confirm_password = PasswordField(
-        'Confirm Password',
+        'Confirmar senha',
         validators=[
             DataRequired(),
             Length(min=8),
@@ -48,19 +48,19 @@ class RegistrationForm(FlaskForm):
         ]
     )
 
-    submit = SubmitField('Sign Up')
+    submit = SubmitField('Registrar')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
 
         if user:
-            raise ValidationError('Username taken. Try a different one')
+            raise ValidationError('Esse username já tem dono! Tente um diferente')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
 
         if user:
-            raise ValidationError('E-mail taken. Try a different one')
+            raise ValidationError('Esse E-mail já tem dono! Tente um diferente')
 
 
 class LoginForm(FlaskForm):
@@ -75,16 +75,16 @@ class LoginForm(FlaskForm):
     )
 
     password = PasswordField(
-        'Password',
+        'Senha',
         validators=[
             DataRequired(),
             Length(min=8)
         ]
     )
 
-    remember = BooleanField('Remenber Me')
+    remember = BooleanField('Lembrar de mim')
 
-    submit = SubmitField('Log In')
+    submit = SubmitField('LogIn')
 
 
 class UpdateAccountForm(FlaskForm):
@@ -107,25 +107,25 @@ class UpdateAccountForm(FlaskForm):
     )
 
     picture = FileField(
-        'Update Picture',
+        'Mudar foto',
         validators=[
             FileAllowed(['jpg', 'png'])
         ]
     )
 
-    submit = SubmitField('Update')
+    submit = SubmitField('Atualizar')
 
     def validate_username(self, username):
         if current_user.username != username.data:
             user = User.query.filter_by(username=username.data).first()
             if user:
-                raise ValidationError('Username taken. Try a different one')
+                raise ValidationError('Esse username já tem dono! Tente um diferente')
 
     def validate_email(self, email):
         if current_user.email != email.data:
             user = User.query.filter_by(email=email.data).first()
             if user:
-                raise ValidationError('E-mail taken. Try a different one')
+                raise ValidationError('Esse username já tem dono! Tente um diferente')
 
 
 class RequestResetForm(FlaskForm):
@@ -139,20 +139,20 @@ class RequestResetForm(FlaskForm):
         ]
     )
 
-    submit = SubmitField('Request Password Reset')
+    submit = SubmitField('Solicitar nova senha')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
 
         if user is None:
-            raise ValidationError('No account for this E-mail')
+            raise ValidationError('Não existe nenhuma conta com esse E-mail')
 
 
 class RequestPasswordForm(FlaskForm):
     """docstring for RequestPasswordForm."""
 
     password = PasswordField(
-        'Password',
+        'Nova senha',
         validators=[
             DataRequired(),
             Length(min=8)
@@ -160,7 +160,7 @@ class RequestPasswordForm(FlaskForm):
     )
 
     confirm_password = PasswordField(
-        'Confirm Password',
+        'Confirmar senha',
         validators=[
             DataRequired(),
             Length(min=8),
@@ -168,4 +168,4 @@ class RequestPasswordForm(FlaskForm):
         ]
     )
 
-    submit = SubmitField('Reset password')
+    submit = SubmitField('Mudar senha')
