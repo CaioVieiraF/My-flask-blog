@@ -40,3 +40,25 @@ To reset your password, visit the following link:
 if you didn't make this request you can ignore this E-mail.
     '''
     mail.send(msg)
+
+
+def send_delete_email(user):
+    token = user.get_reset_token()
+    msg = Message(
+        'Account delete request',
+        sender='noreply@demo.com',
+        recipients=[
+            user.email
+        ]
+    )
+
+    msg.body = f'''
+To delete your account, visit the following link:
+{url_for('users.request_token_delete',
+    user_id=user.id,
+    token=token,
+    _external=True
+)}
+if you didn't make this request you can ignore this E-mail.
+    '''
+    mail.send(msg)

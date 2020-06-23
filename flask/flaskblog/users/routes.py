@@ -1,8 +1,20 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint
+from flask import (
+    render_template,
+    url_for,
+    flash,
+    redirect,
+    request,
+    Blueprint,
+    abort
+)
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskblog import db, bcrypt
-from flaskblog.models import User, Post
-from flaskblog.users.utils import save_image, send_reset_email
+from flaskblog.models import User, Post, Comment
+from flaskblog.users.utils import (
+    save_image,
+    send_reset_email,
+    send_delete_email
+)
 from flaskblog.users.forms import (
     RegistrationForm,
     LoginForm,
@@ -175,3 +187,43 @@ def request_token(token):
         title='Reset Password',
         form=form
     )
+
+
+@users.route('/user/<int:user_id>/delete_user', methods=['GET', 'POST'])
+@login_required
+def delete_user(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    if user != current_user:
+        abort(403)
+
+    send_delete_email(user)
+    flash('An confirmation E-mail has been sent.', 'info')
+    return redirect(url_for('users.logout'))
+
+
+@users.route(
+    '/user/<int:user_id>/delete_user/<token>',
+    methods=['GET', 'POST']
+)
+def request_token_delete(user_id, token):
+    user_token = User.verify_reset_token(token)
+
+    if user_token is None:
+        flash('That is an invalid or expired token.', 'warning')
+        return redirect(url_for('main.home'))
+
+    user = User.query.get_or_404(user_id)
+
+    comments = Comment.query.filter_by(user_id=user.id).all()
+    for comment in comments:
+        db.session.delete(comment)
+
+    posts = Post.query.filter_by(author=user).all()
+    for post in posts:
+        db.session.delete(post)
+
+    db.session.delete(user)
+    db.session.commit()
+
+    flash('Account deleted', 'success')
+    return redirect(url_for('main.home'))
