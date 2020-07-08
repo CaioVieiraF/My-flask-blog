@@ -86,6 +86,8 @@ class Post(db.Model):
         nullable=False
     )
 
+    description = db.Column(db.String(200))
+
     date_posted = db.Column(
         db.DateTime,
         nullable=False,
@@ -95,6 +97,10 @@ class Post(db.Model):
     content = db.Column(
         db.Text,
         nullable=False
+    )
+
+    tags = db.Column(
+        db.String(30)
     )
 
     user_id = db.Column(

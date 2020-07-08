@@ -2,17 +2,29 @@ from flask_login import current_user, login_required
 from flaskblog import db
 from flaskblog.models import Post, Comment
 from flaskblog.posts.forms import PostForm, CommentForm
+from flaskblog.main.forms import SearchForm
 from flask import (
     render_template,
     url_for,
     flash,
     redirect,
+    g,
     request,
     abort,
     Blueprint
 )
 
 posts = Blueprint('posts', __name__)
+
+
+@posts.before_app_request
+def before_request():
+    g.search_form = SearchForm()
+
+    if g.search_form.validate_on_submit():
+        return redirect(
+            url_for('main.search', tags=g.search_form.search_term.data.lower())
+        )
 
 
 @posts.route('/post/new', methods=['GET', 'POST'])
@@ -22,7 +34,9 @@ def new_post():
     if form.validate_on_submit():
         post = Post(
             title=form.title.data,
+            description=form.description.data,
             content=form.content.data,
+            tags=form.tags.data.lower(),
             author=current_user
         )
 
@@ -88,12 +102,16 @@ def update_post(post_id):
     if form.validate_on_submit():
         post.title = form.title.data
         post.content = form.content.data
+        post.description = form.description.data
+        post.tags = form.tags.data.lower()
         db.session.commit()
         flash("O post foi atualizado", 'success')
         return redirect(url_for('posts.post', post_id=post.id))
     elif request.method == 'GET':
         form.title.data = post.title
         form.content.data = post.content
+        form.description.data = post.description
+        form.tags.data = post.tags
 
     return render_template(
         'create_post.html',
@@ -119,3 +137,19 @@ def delete_post(post_id):
 
     flash('Post deletado', 'success')
     return redirect(url_for('main.home'))
+
+
+@posts.route('/comment/<int:comment_id>/delete', methods=['GET', 'POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    post_id = comment.post_id
+
+    if comment.author != current_user:
+        abort(403)
+
+    db.session.delete(comment)
+    db.session.commit()
+
+    flash('Comment deleted', 'success')
+    return redirect(url_for('posts.post', post_id=post_id))

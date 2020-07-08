@@ -13,12 +13,16 @@ class PostForm(FlaskForm):
         ]
     )
 
+    description = StringField('Descrição')
+
     content = TextAreaField(
         'Conteudo',
         validators=[
             DataRequired()
         ]
     )
+
+    tags = StringField('tags')
 
     submit = SubmitField('Post')
 
