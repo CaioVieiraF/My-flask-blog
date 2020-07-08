@@ -1,0 +1,40 @@
+{% macro post_container(post, show_content=False) %}
+<article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}" alt="" />
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            {% if post.author == current_user %}
+            <div class="">
+                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+            </div>
+            {% endif %}
+        </div>
+        {% if show_content %}
+        <h2 class="article-title">{{ post.title }}</h2>
+        {% else %}
+        <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+        {% endif %}
+        <small class="article-content">{{ post.description }}</small>
+        {% if show_content %}
+        <p class="article-content">{{ post.content }}</p>
+        {% endif %}
+        {% if post.tags %}
+        <small>tags:</small>
+        <br>
+        <div class="btn-group" role="group">
+            {% for tag in post.tags.split(' ') %}
+            <form action="{{ url_for('main.search', tags=tag) }}" class="ml-1 mr-1" >
+                <button type="submit" class="btn btn-secondary btn-sm">{{ tag.lower() }}</button>
+            </form>
+            {% endfor %}
+        </div>
+        {% if post.author == current_user %}
+        <a href="#" class="badge badge-primary">Edit tags</a>
+        {% endif %}
+        {% endif %}
+    </div>
+</article>
+{% endmacro %}

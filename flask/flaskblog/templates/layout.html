@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     {% if title %}
     <title>Flask blog - {{ title }}</title>
@@ -19,7 +20,7 @@
 
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
             <div class="container">
                 <a class="navbar-brand mr-4" href="{{ url_for('main.home') }}">Flask Blog</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,17 +29,30 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav mr-auto">
                         <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
-                        <a class="nav-item nav-link" href="{{ url_for('main.about') }}">Sobre</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About</a>
+                        {% if g.search_form %}
+
+                            <form class="form-inline ml-3" action="" method="POST">
+                                {{ g.search_form.hidden_tag() }}
+                                <div class="input-group input-group-sm">
+                                    {{ g.search_form.search_term(class="form-control") }}
+                                    <div class="input-group-append">
+                                        {{ g.search_form.submit(class="input-group-text", id="basic-addon1 inputGroup-sizing-sm") }}
+                                    </div>
+                                </div>
+                            </form>
+                        {% endif %}
+
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
                         {% if current_user.is_authenticated %}
-                            <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">Novo Post</a>
-                            <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Conta</a>
-                            <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
+                        <a class="nav-item nav-link" href="{{ url_for('posts.new_post') }}">New Post</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Account</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
                         {% else %}
-                            <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
-                            <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Registrar</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
                         {% endif %}
                     </div>
                 </div>
@@ -49,23 +63,25 @@
         <div class="row">
             <div class="col-md-8">
                 {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
                 {% endwith %}
                 {% block content %}{% endblock %}
             </div>
             <div class="col-md-4">
                 <div class="content-section">
-                    <h3>Links</h3>
-                    <p class='text-muted'>Alguns links uteis:
+                    <h3>Our Sidebar</h3>
+                    <p class='text-muted'>You can put any information here you'd like.
                     <ul class="list-group">
-			    		<li class="list-group-item list-group-item-light"><a href="{{ url_for('users.user_posts', username='Caio Vieira') }}">Posts do adm</a></li>
-					<li class="list-group-item list-group-item-light"><a href="{{ url_for('main.about') }}">Sobre</a></li>
+                        <li class="list-group-item list-group-item-light">Latest Posts</li>
+                        <li class="list-group-item list-group-item-light">Announcements</li>
+                        <li class="list-group-item list-group-item-light">Calendars</li>
+                        <li class="list-group-item list-group-item-light">etc</li>
                     </ul>
                     </p>
                 </div>

@@ -1,4 +1,10 @@
-from flask import render_template, request, Blueprint
+from flask import (
+    render_template,
+    request,
+    Blueprint,
+    redirect,
+    url_for
+)
 from flaskblog.models import Post
 
 main = Blueprint('main', __name__)
@@ -20,4 +26,34 @@ def home():
 
 @main.route('/about')
 def about():
-    return render_template('about.html', title='Sobre')
+    return render_template('about.html', title='About')
+
+
+@main.route('/search/<string:tags>', methods=['GET', 'POST'])
+def search(tags=None):
+    if not tags:
+        return redirect(url_for('main.home'))
+    page = request.args.get('page', 1, type=int)
+    post_list = [
+        post.id for post in Post.query.all()
+        if tags in post.tags
+    ]
+
+    posts = Post.query\
+        .filter(
+            Post.id.in_(post_list)
+        )\
+        .order_by(
+            Post.date_posted.desc()
+        )\
+        .paginate(
+            per_page=6,
+            page=page
+        )
+
+    return render_template(
+        'search.html',
+        title='Search',
+        tags=tags,
+        posts=posts
+    )

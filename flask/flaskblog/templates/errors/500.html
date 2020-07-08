@@ -1,7 +1,9 @@
 {% extends 'layout.html' %}
 {% block content %}
     <div class="content-section">
+        {% block error_message %}
         <h1>Something went wrong (500)</h1>
         <p>We're experiencing some trouble. Try again later</p>
+        {% endblock error_message %}
     </div>
 {% endblock content %}
