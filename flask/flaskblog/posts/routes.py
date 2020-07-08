@@ -43,19 +43,20 @@ def new_post():
         db.session.add(post)
         db.session.commit()
 
-        flash('Post criado!', 'success')
+        flash('Post created', 'success')
         return redirect(url_for('main.home'))
 
     return render_template(
         'create_post.html',
-        title='Novo Post',
+        title='New Post',
         form=form,
-        legend='Novo post'
+        legend='New post'
     )
 
 
 @posts.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
+
     page = request.args.get('page', 1, type=int)
     post = Post.query.get_or_404(post_id)
     comments = Comment.query\
@@ -79,7 +80,7 @@ def post(post_id):
         db.session.add(new_comment)
         db.session.commit()
 
-        flash('Comentário adicionado', 'success')
+        flash('Comment added', 'success')
         return redirect(url_for('posts.post', post_id=post_id))
 
     return render_template(
@@ -87,7 +88,7 @@ def post(post_id):
         title=post.title,
         post=post,
         form=form,
-        comments=comments
+        comments=comments,
     )
 
 
@@ -105,7 +106,7 @@ def update_post(post_id):
         post.description = form.description.data
         post.tags = form.tags.data.lower()
         db.session.commit()
-        flash("O post foi atualizado", 'success')
+        flash("The post is updated", 'success')
         return redirect(url_for('posts.post', post_id=post.id))
     elif request.method == 'GET':
         form.title.data = post.title
@@ -115,9 +116,9 @@ def update_post(post_id):
 
     return render_template(
         'create_post.html',
-        title='Editar post',
+        title='Update post',
         form=form,
-        legend='Editar post'
+        legend='Update post'
     )
 
 
@@ -135,7 +136,7 @@ def delete_post(post_id):
 
     db.session.commit()
 
-    flash('Post deletado', 'success')
+    flash('Post deleted', 'success')
     return redirect(url_for('main.home'))
 
 

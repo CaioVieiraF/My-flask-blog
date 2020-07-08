@@ -3,7 +3,7 @@
 {% block content %}
 {{ post_container(post=post, show_content=True) }}
 <!--Comments-->
-<h5>Comentários</h5>
+<h5>Comments</h5>
 {% if current_user.is_authenticated %}
 <div class="content-section">
     <form action="" method="POST">
@@ -60,15 +60,15 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Deletar post?</h5>
+                <h5 class="modal-title" id="deleteModalLabel">Delete post?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
-                    <input class="btn btn-danger" type="submit" value="Deletar">
+                    <input class="btn btn-danger" type="submit" value="Delete">
                 </form>
             </div>
         </div>
