@@ -7,16 +7,16 @@ class PostForm(FlaskForm):
     """docstring for PostForm."""
 
     title = StringField(
-        'Title',
+        'Título',
         validators=[
             DataRequired()
         ]
     )
 
-    description = StringField('Description')
+    description = StringField('Descrição')
 
     content = TextAreaField(
-        'Content',
+        'Conteudo',
         validators=[
             DataRequired()
         ]
@@ -31,11 +31,11 @@ class CommentForm(FlaskForm):
     """docstring for CommentForm."""
 
     content = TextAreaField(
-        'New Comment',
+        'Novo comentário',
         validators=[
             DataRequired(),
             Length(max=200)
         ]
     )
 
-    submit = SubmitField('Comment')
+    submit = SubmitField('Comentar')

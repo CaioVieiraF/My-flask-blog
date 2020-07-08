@@ -50,13 +50,13 @@ def register():
 
         flash(
             f"""
-                Account created successfuly!\n
-                Welcome {form.username.data} to my blog!
+                Conta criada com sucesso!\n
+                Bem-vindo {form.username.data} ao meu blog!
             """,
             'success'
         )
         return redirect(url_for('users.login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Registrar', form=form)
 
 
 @users.route('/login', methods=['GET', 'POST'])
@@ -74,12 +74,12 @@ def login():
         ):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            flash('Logged in successfuly', 'success')
+            flash('Login com sucesso', 'success')
             return redirect(
                 next_page
             ) if next_page else redirect(url_for('main.home'))
         else:
-            flash('wrong credentials', 'danger')
+            flash('Credenciais incorretas', 'danger')
 
     return render_template('login.html', title='Login', form=form)
 
@@ -102,7 +102,7 @@ def account():
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash('Account information updated', 'success')
+        flash('As informações da conta foram atualizadas', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -114,7 +114,7 @@ def account():
     )
     return render_template(
         'account.html',
-        title='Account',
+        title='Minha conta',
         image_file=image_file,
         form=form
     )
@@ -148,12 +148,12 @@ def reset_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
-        flash('Reset e-mail sent', 'info')
+        flash('E-mail enviado. Confira sua caixa de entrada', 'info')
         return redirect(url_for('users.login'))
 
     return render_template(
         'reset_request.html',
-        title='Reset Password',
+        title='Recuperar senha',
         form=form
     )
 
@@ -166,7 +166,7 @@ def request_token(token):
     user = User.verify_reset_token(token)
 
     if user is None:
-        flash('That is an invalid or expired token.', 'warning')
+        flash('Esse token foi expirado ou é inválido.', 'warning')
         return redirect(url_for('users.reset_request'))
 
     form = RequestPasswordForm()
@@ -179,12 +179,12 @@ def request_token(token):
         user.password = hashed_password
         db.session.commit()
 
-        flash("Password reseted successfuly!", 'success')
+        flash("Sua senha foi alterada com sucesso!", 'success')
         return redirect(url_for('users.login'))
 
     return render_template(
         'reset_token.html',
-        title='Reset Password',
+        title='Recuperar senha',
         form=form
     )
 
@@ -197,7 +197,7 @@ def delete_user(user_id):
         abort(403)
 
     send_delete_email(user)
-    flash('An confirmation E-mail has been sent.', 'info')
+    flash('Um E-mail de confirmação foi enviado.', 'info')
     return redirect(url_for('users.logout'))
 
 
@@ -209,7 +209,7 @@ def request_token_delete(user_id, token):
     user_token = User.verify_reset_token(token)
 
     if user_token is None:
-        flash('That is an invalid or expired token.', 'warning')
+        flash('Esse token foi expirado ou é inválido.', 'warning')
         return redirect(url_for('main.home'))
 
     user = User.query.get_or_404(user_id)
@@ -225,5 +225,5 @@ def request_token_delete(user_id, token):
     db.session.delete(user)
     db.session.commit()
 
-    flash('Account deleted', 'success')
+    flash('Conta deletada', 'success')
     return redirect(url_for('main.home'))

@@ -1,3 +1,4 @@
+from flaskblog.models import Post
 from flask import (
     render_template,
     request,
@@ -5,7 +6,6 @@ from flask import (
     redirect,
     url_for
 )
-from flaskblog.models import Post
 
 main = Blueprint('main', __name__)
 
@@ -26,7 +26,7 @@ def home():
 
 @main.route('/about')
 def about():
-    return render_template('about.html', title='About')
+    return render_template('about.html', title='Sobre')
 
 
 @main.route('/search/<string:tags>', methods=['GET', 'POST'])
