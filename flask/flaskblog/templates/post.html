@@ -1,7 +1,7 @@
 {% from 'layouts.html' import post_container %}
 {% extends 'layout.html' %}
 {% block content %}
-{{ post_container(post=post, show_content=True) }}
+{{ post_container(post=post, current_user=current_user, show_content=True) }}
 <!--Comments-->
 <h5>Comentários</h5>
 {% if current_user.is_authenticated %}
