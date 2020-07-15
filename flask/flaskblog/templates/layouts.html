@@ -1,4 +1,4 @@
-{% macro post_container(post, show_content=False) %}
+{% macro post_container(post, current_user=False, show_content=False) %}
 <article class="media content-section">
     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}" alt="" />
     <div class="media-body">
